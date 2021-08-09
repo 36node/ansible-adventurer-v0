@@ -3,26 +3,74 @@
 namespace: adventurer-v0
 state: present
 
-zposter_state: "{{ state }}"
-zposter_namespace: "{{ namespace }}"
+adventurer_state: "{{ state }}"
+adventurer_namespace: "{{ namespace }}"
 
-ingress_name: zposter
-domain: zposter.36node.com
+ingress_name: adventurer
+domain: adventurer.tech
 
 mongodb_connection: mongodb://root:it_is_a_secret@mongodb
 
-content_version: latest
-content_image: "registry.cn-hongkong.aliyuncs.com/36node/content:{{ content_version }}"
-content_time: 20210804120000
-content_port: "80"
-content_path: /content/v0
-content_mongodb_connection: "{{ mongodb_connection }}/core?authSource=admin"
+core_version: latest
+core_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-core:{{ core_version }}"
+core_time: 20210804120000
+core_port: "80"
+core_path: /core/v0
+core_log_level: warn
+core_base_salary: "1.2"
+core_ns: /adventurer
+core_drvier_name: zzswang
+core_drvier_token: token
+core_github_hook: https://api.adventurer.tech/core/v0/hook-events
+core_invitation_url: https://hall.adventurer.tech/login
+core_mongodb_connection: "{{ mongodb_connection }}/core?authSource=admin"
+core_rate_limit_all: "2000"
+core_rate_limit_single: "500"
 
-web_version: latest
-web_image: "registry.cn-hongkong.aliyuncs.com/36node/zposter-web:{{ web_version }}"
-web_time: 20210804120000
-web_storage_bucket: https://static.36node.com
-web_content_path: https://api.zposter.36node.com/content/v0
-web_auth_path: https://api.stargate.36node.com/auth/v0
-web_auth_provider: 5cb9a4edc48ad400120d28a7
-web_health_path: /
+finance_version: latest
+finance_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-finance:{{ finance_version }}"
+finance_time: 20210804120000
+finance_title: 冒险者-指挥塔
+finance_github_login: https://github.com/login/oauth/authorize?client_id=9ed21c8161b245409262
+finance_provider: 5e9fc73610b42d00118298d1
+finance_core_path: https://api.adventurer.tech/core/v0
+finance_ns: /adventurer
+
+guide_version: latest
+guide_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-guide:{{ guide_version }}"
+guide_time: 20210804120000
+guide_health_path: /
+
+hall_version: latest
+hall_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-hall:{{ hall_version }}"
+hall_time: 20210804120000
+hall_title: 冒险者大厅
+hall_github_login: https://github.com/login/oauth/authorize?client_id=4c3f007d40e81f2a8805
+hall_provider: 5dd393a422bbcb0011656b7d
+hall_core_path: https://api.adventurer.tech/core/v0
+hall_ns: /adventurer
+
+matrix_version: latest
+matrix_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-matrix:{{ matrix_version }}"
+matrix_time: 20210804120000
+matrix_title: 冒险者公会-母巢
+matrix_github_login: https://github.com/login/oauth/authorize?client_id=8eff2b6bd79770bd93e0
+matrix_provider: 5e9fc6d010b42d00118298be
+matrix_core_path: https://api.adventurer.tech/core/v0
+matrix_ns: /adventurer
+
+tower_version: latest
+tower_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-tower:{{ tower_version }}"
+tower_time: 20210804120000
+tower_title: 冒险者-指挥塔
+tower_github_login: https://github.com/login/oauth/authorize?client_id=807551d328368a22bfbf
+tower_provider: 5e9fc648edb36e0011311227
+tower_core_path: https://api.adventurer.tech/core/v0
+tower_ns: /adventurer
+tower_ticket_path: https://tower.adventurer.tech/tickets
+
+www_version: latest
+www_image: "registry.cn-hongkong.aliyuncs.com/36node/adventurer-www:{{ www_version }}"
+www_time: 20210804120000
+www_zposter_path: /content/v0
+www_health_path: /
