@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tower
+  labels:
+    app: tower
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: tower
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tower
+  labels:
+    app: tower
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: tower
+  template:
+    metadata:
+      labels:
+        app: tower
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: tower
+          image: "{{ tower_image }}"
+          env:
+            - name: DEPLOY_TIME
+              value: "{{ tower_time }}"
+            - name: REACT_APP_BASE_TITLE
+              value: "{{ tower_title }}"
+            - name: REACT_APP_GITHUB_LOGIN
+              value: "{{ tower_github_login }}"
+            - name: REACT_APP_PROVIDER
+              value: "{{ tower_provider }}"
+            - name: REACT_APP_CORE_BASE
+              value: "{{ tower_core_path }}"
+            - name: REACT_APP_ROOT_NS
+              value: "{{ tower_ns }}"
+            - name: REACT_APP_TICKET_LINK_BASE
+              value: "{{ tower_ticket_path }}"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "10m"
+              memory: "32Mi"

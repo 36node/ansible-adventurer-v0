@@ -1,0 +1,73 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ ingress_name }}"
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
+    traefik.ingress.kubernetes.io/redirect-regex: "^https://www.(.*)"
+    traefik.ingress.kubernetes.io/redirect-replacement: "https://$1"
+spec:
+  rules:
+    - host: "hall.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: hall
+              servicePort: 80
+            path: /
+    - host: "matrix.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: matrix
+              servicePort: 80
+            path: /
+    - host: "tower.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: tower
+              servicePort: 80
+            path: /
+    - host: "finance.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: finance
+              servicePort: 80
+            path: /
+    - host: "api.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: core
+              servicePort: 80
+            path: "{{ core_path }}"
+    - host: "guide.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: guide
+              servicePort: 80
+            path: /
+    - host: "www.{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: www
+              servicePort: 80
+            path: /
+    - host: "{{ domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: www
+              servicePort: 80
+            path: /
+  tls:
+    - hosts:
+        - "{{ domain }}"
+        - "*.{{ domain }}"
+      secretName: "{{ domain }}"

@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: core
+  labels:
+    app: core
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: core
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core
+  labels:
+    app: core
+spec:
+  selector:
+    matchLabels:
+      app: core
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: core
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: core
+          image: "{{ core_image }}"
+          env:
+            - name: DEPLOY_TIME
+              value: "{{ core_time }}"
+            - name: PORT
+              value: "{{ core_port }}"
+            - name: BASE
+              value: "{{ core_path }}"
+            - name: LOG_LEVEL
+              value: "{{ core_log_level }}"
+            - name: BASE_SALARY
+              value: "{{ core_base_salary }}"
+            - name: ROOT_NS
+              value: "{{ core_ns }}"
+            - name: DEFAULT_DRIVER_NAME
+              value: "{{ core_drvier_name }}"
+            - name: DEFAULT_DRIVER_TOKEN
+              value: "{{ core_drvier_token }}"
+            - name: GITHUB_HOOK_PAYLOAD_URL
+              value: "{{ core_github_hook }}"
+            - name: INVITATION_URL
+              value: "{{ core_invitation_url }}"
+            - name: MONGODB_CONNECTION
+              value: "{{ core_mongodb_connection }}"
+            - name: RATE_LIMIT_MAX_ALL
+              value: "{{ core_rate_limit_all }}"
+            - name: RATE_LIMIT_MAX_SINGLE
+              value: "{{ core_rate_limit_single }}"
+          command:
+            - npm
+            - run
+            - server
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "10m"
+              memory: "32Mi"

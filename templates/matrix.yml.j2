@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matrix
+  labels:
+    app: matrix
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: matrix
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix
+  labels:
+    app: matrix
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: matrix
+  template:
+    metadata:
+      labels:
+        app: matrix
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: matrix
+          image: "{{ matrix_image }}"
+          env:
+            - name: DEPLOY_TIME
+              value: "{{ matrix_time }}"
+            - name: REACT_APP_BASE_TITLE
+              value: "{{ matrix_title }}"
+            - name: REACT_APP_GITHUB_LOGIN
+              value: "{{ matrix_github_login }}"
+            - name: REACT_APP_PROVIDER
+              value: "{{ matrix_provider }}"
+            - name: REACT_APP_CORE_BASE
+              value: "{{ matrix_core_path }}"
+            - name: REACT_APP_ROOT_NS
+              value: "{{ matrix_ns }}"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "10m"
+              memory: "32Mi"

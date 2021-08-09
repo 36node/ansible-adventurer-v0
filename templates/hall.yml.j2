@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hall
+  labels:
+    app: hall
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: hall
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hall
+  labels:
+    app: hall
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: hall
+  template:
+    metadata:
+      labels:
+        app: hall
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: hall
+          image: "{{ hall_image }}"
+          env:
+            - name: DEPLOY_TIME
+              value: "{{ hall_time }}"
+            - name: REACT_APP_BASE_TITLE
+              value: "{{ hall_title }}"
+            - name: REACT_APP_GITHUB_LOGIN
+              value: "{{ hall_github_login }}"
+            - name: REACT_APP_PROVIDER
+              value: "{{ hall_provider }}"
+            - name: REACT_APP_CORE_BASE
+              value: "{{ hall_core_path }}"
+            - name: REACT_APP_ROOT_NS
+              value: "{{ hall_ns }}"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "10m"
+              memory: "32Mi"

@@ -1,0 +1,25 @@
+---
+# tasks file for adventurer-v0
+- name: Namespace for adventurer-v0
+  community.kubernetes.k8s:
+    state: "{{ adventurer_state }}"
+    name: "{{ adventurer_namespace }}"
+    api_version: v1
+    kind: Namespace
+
+- name: adventurer-v0 service
+  community.kubernetes.k8s:
+    state: "{{ adventurer_state }}"
+    namespace: "{{ adventurer_namespace }}"
+    template: "{{ item }}"
+  with_items:
+    - core.yml.j2
+    - finance.yml.j2
+    - guide.yml.j2
+    - hall.yml.j2
+    - matrix.yml.j2
+    - tower.yml.j2
+    - www.yml.j2
+    - ingress.yml.j2
+  tags:
+    - adventurer
